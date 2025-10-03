@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de Producto{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ object.name }}</h1>
+    
+    <p><strong>Categoría:</strong> {{ object.category.name }}</p>
+    <p><strong>Precio:</strong> Q{{ object.price }}</p>
+    <p><strong>Stock:</strong> {{ object.stock }}</p>
+    <p><strong>Descripción:</strong> {{ object.description }}</p>
+    {% if object.image %}
+    <p><img src="{{ object.image.url }}" alt="{{ object.name }}" class="img-fluid"></p>
+    {% endif %}
+
+    <a href="{% url 'product_update' object.id %}" class="btn btn-warning">Editar</a>
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">Volver al listado</a>
+</div>
+{% endblock %}
