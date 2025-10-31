@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-5 text-center">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" class="img-fluid rounded shadow" alt="{{ product.name }}">
+      {% else %}
+        <img src="/static/img/no-image.png" class="img-fluid rounded shadow" alt="Sin imagen">
+      {% endif %}
+    </div>
+
+    <div class="col-md-7">
+      <h2 class="fw-bold">{{ product.name }}</h2>
+      <p class="text-muted">{{ product.category.name }}</p>
+      <p class="lead mt-3">{{ product.description }}</p>
+
+      <h3 class="text-primary fw-bold mt-4">Q{{ product.price }}</h3>
+      <p><strong>Stock disponible:</strong> {{ product.stock }}</p>
+
+      <form method="post" action="{% url 'add_to_cart' product.pk %}">
+        {% csrf_token %}
+        <div class="input-group mt-3" style="max-width: 200px;">
+          <input type="number" name="quantity" class="form-control" value="1" min="1">
+          <button type="submit" class="btn btn-success">🛒 Agregar al carrito</button>
+        </div>
+      </form>
+
+      <a href="{% url 'store_home' %}" class="btn btn-outline-secondary mt-4">← Volver a la tienda</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

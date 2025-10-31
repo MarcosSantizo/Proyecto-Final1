@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tienda{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Tienda - Productos</h1>
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card product-card h-100">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top product-card-img" alt="{{ product.name }}">
+            {% endif %}
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h5>{{ product.name }}</h5>
+                    <p>{{ product.description|truncatechars:100 }}</p>
+                    <p><strong>Precio:</strong> Q{{ product.price|floatformat:2 }}</p>
+                    <p><strong>Categoría:</strong> {{ product.category.name }}</p>
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary btn-sm mt-2">Ver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+.product-card {
+    position: relative;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+}
+
+.product-card-img {
+    height: 200px; /* altura fija */
+    width: 100%;
+    object-fit: cover; /* cubre todo el contenedor */
+    object-position: center; /* centra la imagen */
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-card-img {
+    transform: scale(1.1); /* efecto zoom */
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.7); 
+    color: white;
+    padding: 15px;
+    transition: background 0.3s;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.overlay-content h5,
+.overlay-content p {
+    margin: 0.2rem 0;
+}
+
+.overlay .btn {
+    margin-top: 5px;
+}
+</style>
+{% endblock %}

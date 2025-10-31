@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 text-center">{{ category.name }}</h1>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+        <div class="card product-card h-100 text-white">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img" alt="{{ product.name }}">
+            {% else %}
+            <img src="{% static 'store/img/default-product.jpg' %}" class="card-img" alt="{{ product.name }}">
+            {% endif %}
+            <div class="card-img-overlay d-flex flex-column justify-content-end overlay">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description|truncatechars:80 }}</p>
+                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary btn-sm mt-2">Ver producto</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+/* Card general */
+.product-card {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.35);
+}
+
+/* Imagen de la card */
+.product-card img.card-img {
+    height: 250px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover img.card-img {
+    transform: scale(1.05);
+}
+
+/* Overlay con degradado */
+.overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+    padding: 15px;
+    border-radius: 0 0 15px 15px;
+}
+
+/* Título y texto */
+.overlay h5 {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #f8f9fa;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+
+.overlay p {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #e9ecef;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+}
+
+/* Botón destacado */
+.overlay .btn {
+    font-size: 0.85rem;
+    background-color: #5169f1ff; /* coral */
+    border: none;
+}
+
+/* Responsive ajustes */
+@media (max-width: 576px) {
+    .product-card img.card-img {
+        height: 200px;
+    }
+}
+</style>
+{% endblock %}

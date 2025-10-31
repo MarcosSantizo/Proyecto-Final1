@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Carrito de compras{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+  <h2 class="fw-bold mb-3">🛒 Tu carrito</h2>
+  <p>Por ahora tu carrito está vacío.</p>
+  <a href="{% url 'store_home' %}" class="btn btn-primary mt-3">Volver a la tienda</a>
+</div>
+{% endblock %}
