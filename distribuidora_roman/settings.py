@@ -55,9 +55,9 @@ WSGI_APPLICATION = 'distribuidora_roman.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'distribuidora_roman',
-        'USER': 'marcos',           # el usuario que creamos
-        'PASSWORD': '1234',   # la contraseña
+        'NAME': 'Roman',
+        'USER': 'root',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
@@ -65,6 +65,7 @@ DATABASES = {
         },
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -80,7 +81,7 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]   
+STATICFILES_DIRS = [BASE_DIR / "distribuidora_roman" / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"    
 
 
