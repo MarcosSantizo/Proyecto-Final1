@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Registro{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width:400px;">
+    <h3 class="text-center mb-4">🧾 Crear cuenta</h3>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Usuario</label>
+            <input type="text" name="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Confirmar Contraseña</label>
+            <input type="password" name="confirm" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Registrar</button>
+    </form>
+</div>
+{% endblock %}

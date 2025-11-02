@@ -3,18 +3,19 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from decimal import Decimal
 from .models import Product, Category
 
 
-# ✅ Vista para listar productos (panel de administración)
+# ✅ --- CRUD de Productos ---
 class ProductListView(ListView):
     model = Product
     template_name = 'store/product_list.html'
     context_object_name = 'products'
 
 
-# ✅ Crear un producto
 class ProductCreateView(CreateView):
     model = Product
     template_name = 'store/product_form.html'
@@ -22,14 +23,12 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy('product_list')
 
 
-# ✅ Detalle del producto (página pública)
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'store/product_detail.html'
     context_object_name = 'product'
 
 
-# ✅ Actualizar producto
 class ProductUpdateView(UpdateView):
     model = Product
     template_name = 'store/product_form.html'
@@ -37,21 +36,19 @@ class ProductUpdateView(UpdateView):
     success_url = reverse_lazy('product_list')
 
 
-# ✅ Eliminar producto
 class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'store/product_confirm_delete.html'
     success_url = reverse_lazy('product_list')
 
 
-# ✅ Página principal de la tienda (categorías)
+# ✅ --- Tienda pública ---
 class StoreCategoryListView(ListView):
     model = Category
     template_name = 'store/store_home.html'
     context_object_name = 'categories'
 
 
-# ✅ Productos por categoría
 class CategoryProductListView(ListView):
     model = Product
     template_name = 'store/category_products.html'
@@ -67,9 +64,8 @@ class CategoryProductListView(ListView):
         return context
 
 
-# ✅ --- Carrito de compras con sesión ---
+# ✅ --- Carrito de compras ---
 def cart_view(request):
-    """Muestra los productos del carrito"""
     cart = request.session.get('cart', {})
     products = []
     total = Decimal('0.00')
@@ -85,21 +81,15 @@ def cart_view(request):
             'subtotal': subtotal,
         })
 
-    context = {
-        'products': products,
-        'total': total,
-    }
+    context = {'products': products, 'total': total}
     return render(request, 'store/cart.html', context)
 
 
-# ✅ Agregar producto al carrito
 def add_to_cart(request, pk):
-    """Agrega un producto al carrito"""
     product = get_object_or_404(Product, pk=pk)
     quantity = int(request.POST.get('quantity', 1))
     cart = request.session.get('cart', {})
 
-    # Aumenta cantidad si ya está en carrito
     if str(pk) in cart:
         cart[str(pk)]['quantity'] += quantity
     else:
@@ -111,9 +101,7 @@ def add_to_cart(request, pk):
     return redirect('cart')
 
 
-# ✅ Eliminar producto del carrito
 def remove_from_cart(request, pk):
-    """Elimina un producto del carrito"""
     cart = request.session.get('cart', {})
     if str(pk) in cart:
         del cart[str(pk)]
@@ -123,19 +111,15 @@ def remove_from_cart(request, pk):
     return redirect('cart')
 
 
-# ✅ Vaciar todo el carrito
 def clear_cart(request):
-    """Vacía completamente el carrito"""
     request.session['cart'] = {}
     request.session.modified = True
     messages.info(request, "El carrito ha sido vaciado correctamente.")
     return redirect('cart')
 
 
-# ✅ Actualizar cantidad (+ o -)
 @require_POST
 def update_cart(request, pk):
-    """Aumenta o disminuye la cantidad de un producto en el carrito"""
     cart = request.session.get('cart', {})
     action = request.POST.get('action')
 
@@ -145,10 +129,16 @@ def update_cart(request, pk):
         elif action == 'decrease' and cart[str(pk)]['quantity'] > 1:
             cart[str(pk)]['quantity'] -= 1
         else:
-            # Si llega a 0, lo eliminamos del carrito
             del cart[str(pk)]
-
         request.session['cart'] = cart
         request.session.modified = True
 
     return redirect('cart')
+
+
+# ✅ --- Panel protegido para admin/staff ---
+@login_required
+@staff_member_required
+def admin_dashboard(request):
+    """Panel principal solo para staff o superusuarios"""
+    return render(request, 'store/admin_dashboard.html')
