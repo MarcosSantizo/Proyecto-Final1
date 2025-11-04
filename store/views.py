@@ -5,17 +5,60 @@ from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
+from django.db.models import Q
 from decimal import Decimal
 from .models import Product, Category
 
 
+# ✅ --- Panel protegido para admin/staff ---
+@login_required
+@staff_member_required
+def admin_dashboard(request):
+    """Panel principal solo para staff o superusuarios"""
+    return render(request, 'store/admin_dashboard.html')
+
+
+# ✅ --- CRUD de Categorías ---
+@method_decorator(staff_member_required, name='dispatch')
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'store/category_list.html'
+    context_object_name = 'categories'
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CategoryCreateView(CreateView):
+    model = Category
+    template_name = 'store/category_form.html'
+    fields = ['name', 'description', 'image']
+    success_url = reverse_lazy('category_list')
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CategoryUpdateView(UpdateView):
+    model = Category
+    template_name = 'store/category_form.html'
+    fields = ['name', 'description', 'image']
+    success_url = reverse_lazy('category_list')
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CategoryDeleteView(DeleteView):
+    model = Category
+    template_name = 'store/category_confirm_delete.html'
+    success_url = reverse_lazy('category_list')
+
+
 # ✅ --- CRUD de Productos ---
+@method_decorator(staff_member_required, name='dispatch')
 class ProductListView(ListView):
     model = Product
     template_name = 'store/product_list.html'
     context_object_name = 'products'
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class ProductCreateView(CreateView):
     model = Product
     template_name = 'store/product_form.html'
@@ -23,12 +66,7 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy('product_list')
 
 
-class ProductDetailView(DetailView):
-    model = Product
-    template_name = 'store/product_detail.html'
-    context_object_name = 'product'
-
-
+@method_decorator(staff_member_required, name='dispatch')
 class ProductUpdateView(UpdateView):
     model = Product
     template_name = 'store/product_form.html'
@@ -36,10 +74,17 @@ class ProductUpdateView(UpdateView):
     success_url = reverse_lazy('product_list')
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'store/product_confirm_delete.html'
     success_url = reverse_lazy('product_list')
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'store/product_detail.html'
+    context_object_name = 'product'
 
 
 # ✅ --- Tienda pública ---
@@ -136,9 +181,33 @@ def update_cart(request, pk):
     return redirect('cart')
 
 
-# ✅ --- Panel protegido para admin/staff ---
+# ✅ --- Finalizar compra ---
 @login_required
-@staff_member_required
-def admin_dashboard(request):
-    """Panel principal solo para staff o superusuarios"""
-    return render(request, 'store/admin_dashboard.html')
+def checkout_view(request):
+    """Finaliza la compra y limpia el carrito"""
+    cart = request.session.get('cart', {})
+    if not cart:
+        messages.warning(request, "Tu carrito está vacío.")
+        return redirect('cart')
+
+    request.session['cart'] = {}
+    request.session.modified = True
+
+    return render(request, 'store/checkout_success.html')
+
+
+# ✅ --- Buscador global ---
+def product_search(request):
+    query = request.GET.get('q', '').strip()
+    results = []
+
+    if query:
+        results = Product.objects.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        )
+
+    context = {
+        'query': query,
+        'results': results,
+    }
+    return render(request, 'store/product_search_results.html', context)

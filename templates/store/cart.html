@@ -84,7 +84,12 @@
                     <button type="submit" class="btn btn-danger">🧹 Vaciar carrito</button>
                 </form>
 
-                <a href="#" class="btn btn-success disabled">💳 Finalizar compra</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'checkout' %}" class="btn btn-success">💳 Finalizar compra</a>
+                {% else %}
+                    <a href="{% url 'user_login' %}" class="btn btn-success disabled"
+                       title="Inicia sesión para completar tu compra">💳 Finalizar compra</a>
+                {% endif %}
             </div>
         </div>
 
@@ -100,5 +105,4 @@
     body { background-color: #f8f9fa; }
     .btn-sm { width: 32px; height: 32px; padding: 0; font-weight: bold; }
 </style>
-
 {% endblock %}

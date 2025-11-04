@@ -5,8 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('store.urls')),            # Página principal
-    path('accounts/', include('accounts.urls')) # Sistema de usuarios
+    path('', include('store.urls')),
+    path('accounts/', include('accounts.urls')),  # 👈 Login, registro y logout
 ]
 
 if settings.DEBUG:

@@ -21,11 +21,11 @@
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
+    <span class="visually-hidden">Anterior</span>
   </button>
   <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
+    <span class="visually-hidden">Siguiente</span>
   </button>
 </div>
 
@@ -58,8 +58,7 @@
     object-fit: cover;
     object-position: center;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
 }
 
 /* Card general */
@@ -75,10 +74,8 @@
     box-shadow: 0 15px 25px rgba(0,0,0,0.35);
 }
 
-/* Imagen de la card */
 .category-card img.card-img {
     height: 250px;
-    width: 100%;
     object-fit: cover;
     object-position: center;
     transition: transform 0.5s ease;
@@ -88,14 +85,13 @@
     transform: scale(1.05);
 }
 
-/* Overlay para el texto */
+/* Overlay */
 .overlay {
     background: rgba(0,0,0,0.6);
     padding: 15px;
     border-radius: 0 0 15px 15px;
 }
 
-/* Título y texto */
 .overlay h5 {
     font-weight: bold;
     font-size: 1.1rem;
@@ -106,18 +102,10 @@
     margin-bottom: 8px;
 }
 
-/* Botón */
 .overlay .btn {
     font-size: 0.85rem;
 }
 
-/* Asegura que todas las cards tengan la misma altura */
-.d-flex.align-items-stretch > .category-card {
-    display: flex;
-    flex-direction: column;
-}
-
-/* Responsive ajustes */
 @media (max-width: 576px) {
     .category-card img.card-img {
         height: 200px;
