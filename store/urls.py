@@ -2,7 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Página principal
     path('', views.StoreCategoryListView.as_view(), name='store_home'),
+
+    # Categorías y productos
     path('categoria/<int:pk>/', views.CategoryProductListView.as_view(), name='category_products'),
     path('producto/<int:pk>/', views.ProductDetailView.as_view(), name='product_detail'),
 
@@ -27,4 +30,7 @@ urlpatterns = [
     path('productos/nuevo/', views.ProductCreateView.as_view(), name='product_create'),
     path('productos/editar/<int:pk>/', views.ProductUpdateView.as_view(), name='product_update'),
     path('productos/eliminar/<int:pk>/', views.ProductDeleteView.as_view(), name='product_delete'),
+
+    # Panel de administración personalizado
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
 ]

@@ -43,8 +43,6 @@ def admin_login_view(request):
 
     return render(request, "accounts/admin_login.html")
 
-
-# ✅ Registro de cliente
 def register_customer(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -52,6 +50,10 @@ def register_customer(request):
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
         first_name = request.POST.get("first_name")
+
+        if not first_name:
+            messages.error(request, "El nombre es obligatorio.")
+            return redirect("register_customer")
 
         if password1 != password2:
             messages.error(request, "Las contraseñas no coinciden.")

@@ -1,108 +1,93 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Carrito{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <h1 class="text-center mb-4">🛒 Tu carrito de compras</h1>
+<h2 class="text-center mb-4">🛒 Tu carrito de compras</h2>
 
-    <!-- ✅ Mensajes -->
-    {% if messages %}
-      <div class="mb-3">
-        {% for message in messages %}
-          <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    {% if products %}
-        <div class="table-responsive">
-            <table class="table table-striped align-middle shadow-sm">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Producto</th>
-                        <th>Imagen</th>
-                        <th style="width: 160px;">Cantidad</th>
-                        <th>Precio</th>
-                        <th>Subtotal</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in products %}
-                    <tr>
-                        <td class="fw-semibold">{{ item.product.name }}</td>
-                        <td>
-                            {% if item.product.image %}
-                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid rounded" style="width: 70px; height: auto;">
-                            {% else %}
-                                <img src="{% static 'store/img/no-image.png' %}" alt="Sin imagen" style="width: 70px;">
-                            {% endif %}
-                        </td>
-
-                        <!-- ✅ Controles de cantidad -->
-                        <td>
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                                <form method="post" action="{% url 'update_cart' item.product.id %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="decrease">
-                                    <button type="submit" class="btn btn-outline-secondary btn-sm">–</button>
-                                </form>
-
-                                <span class="fw-bold">{{ item.quantity }}</span>
-
-                                <form method="post" action="{% url 'update_cart' item.product.id %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="increase">
-                                    <button type="submit" class="btn btn-outline-secondary btn-sm">+</button>
-                                </form>
-                            </div>
-                        </td>
-
-                        <td>Q {{ item.product.price|floatformat:2 }}</td>
-                        <td class="fw-bold text-success">Q {{ item.subtotal|floatformat:2 }}</td>
-
-                        <td>
-                            <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-outline-danger btn-sm">
-                                🗑️ Eliminar
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 💰 Total -->
-        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap">
-            <h4 class="mb-3 mb-md-0">💵 Total: <strong>Q {{ total|floatformat:2 }}</strong></h4>
-
-            <div class="d-flex gap-2">
-                <a href="{% url 'store_home' %}" class="btn btn-secondary">← Seguir comprando</a>
-
-                <form action="{% url 'clear_cart' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">🧹 Vaciar carrito</button>
-                </form>
-
-                {% if user.is_authenticated %}
-                    <a href="{% url 'checkout' %}" class="btn btn-success">💳 Finalizar compra</a>
-                {% else %}
-                    <a href="{% url 'user_login' %}" class="btn btn-success disabled"
-                       title="Inicia sesión para completar tu compra">💳 Finalizar compra</a>
-                {% endif %}
-            </div>
-        </div>
-
-    {% else %}
-        <div class="text-center py-5">
-            <h3 class="mb-3">Tu carrito está vacío 🛍️</h3>
-            <a href="{% url 'store_home' %}" class="btn btn-primary">Explorar productos</a>
-        </div>
-    {% endif %}
+{% if products %}
+<div class="table-responsive">
+    <table class="table align-middle text-center">
+        <thead class="table-dark">
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in products %}
+            <tr>
+                <td class="text-start">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="60" height="60" class="rounded me-2">
+                    {% else %}
+                    <img src="{% static 'store/img/default-product.jpg' %}" width="60" height="60" class="rounded me-2">
+                    {% endif %}
+                    <strong>{{ item.product.name }}</strong>
+                </td>
+                <td>${{ item.product.price }}</td>
+                <td>
+                    <form method="post" action="{% url 'update_cart' item.product.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="decrease">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">−</button>
+                    </form>
+                    <span class="mx-2 fw-bold">{{ item.quantity }}</span>
+                    <form method="post" action="{% url 'update_cart' item.product.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="increase">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+                    </form>
+                </td>
+                <td>${{ item.subtotal }}</td>
+                <td>
+                    <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="table-light">
+                <th colspan="3" class="text-end">Total:</th>
+                <th colspan="2">${{ total }}</th>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 
-<style>
-    body { background-color: #f8f9fa; }
-    .btn-sm { width: 32px; height: 32px; padding: 0; font-weight: bold; }
-</style>
+<div class="d-flex justify-content-between mt-4">
+    <a href="{% url 'store_home' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Seguir comprando
+    </a>
+
+    <div>
+        <a href="{% url 'clear_cart' %}" class="btn btn-outline-danger me-2">
+            <i class="bi bi-trash"></i> Vaciar carrito
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'checkout' %}" class="btn btn-success">
+            <i class="bi bi-bag-check"></i> Finalizar compra
+        </a>
+        {% else %}
+        <a href="{% url 'user_login' %}?next={% url 'checkout' %}" class="btn btn-success">
+            <i class="bi bi-box-arrow-in-right"></i> Inicia sesión para comprar
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% else %}
+<div class="text-center mt-5">
+    <h4>Tu carrito está vacío 😢</h4>
+    <a href="{% url 'store_home' %}" class="btn btn-primary mt-3">
+        <i class="bi bi-arrow-left"></i> Volver a la tienda
+    </a>
+</div>
+{% endif %}
 {% endblock %}

@@ -186,18 +186,25 @@ def update_cart(request, pk):
 def checkout_view(request):
     """Finaliza la compra y limpia el carrito"""
     cart = request.session.get('cart', {})
+
     if not cart:
         messages.warning(request, "Tu carrito está vacío.")
         return redirect('cart')
 
+    # Simula la compra y limpia el carrito
     request.session['cart'] = {}
     request.session.modified = True
 
-    return render(request, 'store/checkout_success.html')
+    context = {
+        'user_name': request.user.first_name or request.user.username,
+    }
+
+    return render(request, 'store/checkout_success.html', context)
 
 
 # ✅ --- Buscador global ---
 def product_search(request):
+    """Busca productos por nombre o descripción"""
     query = request.GET.get('q', '').strip()
     results = []
 
