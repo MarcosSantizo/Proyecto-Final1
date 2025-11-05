@@ -1,7 +1,6 @@
 from pathlib import Path
 import os
-import pymysql
-pymysql.install_as_MySQLdb()
+
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -54,17 +53,16 @@ WSGI_APPLICATION = 'distribuidora_roman.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Roman',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'distribuidora_roman',  # nombre de tu DB
+        'USER': 'postgres',             # usuario que creaste
+        'PASSWORD': '1234',    # la contraseña que pusiste
+        'HOST': 'localhost',            # o IP si es remoto
+        'PORT': 5432,                 # puerto por defecto
     }
 }
+
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
