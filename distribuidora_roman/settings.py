@@ -1,13 +1,12 @@
 from pathlib import Path
 import os
-
-
+import dj_database_url  # 👈 para conectar con la base de datos de Render
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-id9#@p6kp=lve2vq47ha3pxgwjml*=*c(hu!u)z(%g4svm_0!3'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # 👈 permite todos los hosts, Render lo necesita
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -16,11 +15,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'store',  
+    'store',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # 👈 importante para servir archivos estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -34,8 +34,8 @@ ROOT_URLCONF = 'distribuidora_roman.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  
-        'APP_DIRS': True,                  
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -51,19 +51,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'distribuidora_roman.wsgi.application'
 
+# 📦 Base de datos Render
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'distribuidora_roman',
         'USER': 'distribuidora_roman_user',
-        'PASSWORD': 'qUrUR2gIbbfMophSpaWTqLNnSVc7Pt7i',  # 👈 tu contraseña de Render
+        'PASSWORD': 'qUrUR2gIbbfMophSpaWTqLNnSVc7Pt7i',
         'HOST': 'dpg-d45dqq7diees7387cvc0-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }
 
-
-
+# 🔁 Si Render envía DATABASE_URL, usarla automáticamente
+DATABASES['default'] = dj_database_url.config(default=os.getenv('DATABASE_URL', ''), conn_max_age=600)
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -77,11 +78,11 @@ TIME_ZONE = 'America/Guatemala'
 USE_I18N = True
 USE_TZ = True
 
-
+# ⚙️ Archivos estáticos y media
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "distribuidora_roman" / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"    
-
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # 👈 clave para Render
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
