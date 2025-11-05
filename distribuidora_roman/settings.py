@@ -54,11 +54,11 @@ WSGI_APPLICATION = 'distribuidora_roman.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'distribuidora_roman',  # nombre de tu DB
-        'USER': 'postgres',             # usuario que creaste
-        'PASSWORD': '1234',    # la contraseña que pusiste
-        'HOST': 'localhost',            # o IP si es remoto
-        'PORT': 5432,                 # puerto por defecto
+        'NAME': 'distribuidora_roman',
+        'USER': 'distribuidora_roman_user',
+        'PASSWORD': 'qUrUR2gIbbfMophSpaWTqLNnSVc7Pt7i',  # 👈 tu contraseña de Render
+        'HOST': 'dpg-d45dqq7diees7387cvc0-a.oregon-postgres.render.com',
+        'PORT': '5432',
     }
 }
 
