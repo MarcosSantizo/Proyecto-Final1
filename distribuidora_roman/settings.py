@@ -2,8 +2,7 @@ from pathlib import Path
 import os
 import dj_database_url  # 👈 para conectar con la base de datos de Render
 
-import psycopg2
-from psycopg2 import OperationalError
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
