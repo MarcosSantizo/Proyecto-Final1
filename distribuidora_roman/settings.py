@@ -2,6 +2,9 @@ from pathlib import Path
 import os
 import dj_database_url  # 👈 para conectar con la base de datos de Render
 
+import psycopg2
+from psycopg2 import OperationalError
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-id9#@p6kp=lve2vq47ha3pxgwjml*=*c(hu!u)z(%g4svm_0!3'
