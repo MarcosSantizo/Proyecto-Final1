@@ -51,20 +51,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'distribuidora_roman.wsgi.application'
 
-# 📦 Base de datos Render
+# 📦 Base de datos Render (versión final con URL directa)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'distribuidora_roman',
-        'USER': 'distribuidora_roman_user',
-        'PASSWORD': 'qUrUR2gIbbfMophSpaWTqLNnSVc7Pt7i',
-        'HOST': 'dpg-d45dqq7diees7387cvc0-a.oregon-postgres.render.com',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgresql://distribuidora_roman_user:qUrUR2gIbbfMophSpaWTqLNnSVc7Pt7i@dpg-d45dqq7diees7387cvc0-a.oregon-postgres.render.com:5432/distribuidora_roman',
+        conn_max_age=600
+    )
 }
-
-# 🔁 Si Render envía DATABASE_URL, usarla automáticamente
-DATABASES['default'] = dj_database_url.config(default=os.getenv('DATABASE_URL', ''), conn_max_age=600)
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
